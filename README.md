@@ -36,10 +36,8 @@ These names are self explanatory, for each test we Arrange the data that need fo
 Mocks
 
 What do we need to mock?
-- WebClient
-- External Service integration
-- Database
 - Configuration
+- Database
 - Logger
 
 Mocking configuration
@@ -47,11 +45,6 @@ Mocking configuration
 var mockConfiguration = new Mock<IConfiguration>();
 mockConfiguration.Setup(m => m[It.Is<string>(s => s == "ConfigurationKey")]).Returns(<ConfigurationValue>);
 ```
-Setup
-We can follow the instructions given on [MSDN](https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices) to start setting up the integration tests for aspnetcore.
-
-Above link will explain setup of the WebClient as well. So that we can make api calls similar to how we would do it from the client side.
-
 Database
 
 We have configured the database as a service and we have the ability to use whatever database we like. I have setup 3 base classes to use 3 different databases. I can choose whichever database I like depending on the test.
@@ -59,6 +52,11 @@ We have configured the database as a service and we have the ability to use what
 1. In Memory
 2. Sqlite
 3. SqlExpress
+
+Setup
+We can follow the instructions given on [MSDN](https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices) to start setting up the integration tests for aspnetcore.
+
+Above link will explain setup of the WebClient as well. So that we can make api calls similar to how we would do it from the client side.
 
 References
 https://martinfowler.com/articles/mocksArentStubs.html
