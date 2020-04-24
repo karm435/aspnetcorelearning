@@ -8,7 +8,7 @@ namespace EmployeesDirectory.Tests.Infrastructure
         protected override EmployeeContext CreateDbContext()
         {
             var options = new DbContextOptionsBuilder<EmployeeContext>()
-                .UseInMemoryDatabase(databaseName: "InMemoryDatabase")
+                .UseInMemoryDatabase(databaseName: "InMemoryDbForTesting")
                 .Options;
             
             return new EmployeeContext(options);

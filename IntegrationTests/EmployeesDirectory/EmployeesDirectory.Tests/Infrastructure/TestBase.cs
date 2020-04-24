@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -35,6 +36,18 @@ namespace EmployeesDirectory.Tests.Infrastructure
 
         protected virtual void ConfigureServices(IServiceCollection services)
         {
+            var descriptor = services.SingleOrDefault(
+                d => d.ServiceType ==
+                     typeof(DbContextOptions<EmployeeContext>));
+
+            if (descriptor != null)
+            {
+                services.Remove(descriptor);
+            }
+            services.AddDbContext<EmployeeContext>(options =>
+            {
+                options.UseInMemoryDatabase("InMemoryDbForTesting");
+            });
         }
 
         protected virtual void ConfigureTestServices(IServiceCollection services)

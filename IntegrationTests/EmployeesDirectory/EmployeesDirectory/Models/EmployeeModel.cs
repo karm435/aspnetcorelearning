@@ -1,4 +1,6 @@
-﻿namespace EmployeesDirectory.Models
+﻿using System;
+
+namespace EmployeesDirectory.Models
 {
     public class EmployeeModel
     {
@@ -8,6 +10,6 @@
 
         public string LastName { get; set; }
 
-        public string Age { get; set; }
+        public double Age { get; set; }
     }
 }

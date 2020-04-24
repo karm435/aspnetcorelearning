@@ -1,14 +1,18 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using Employees.Data;
+using EmployeesDirectory.Extensions;
 using EmployeesDirectory.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeesDirectory.Controllers
 {
-    public class EmployeeController
+    [Route("api/employees")]
+    public class EmployeeController : Controller
     {
         private readonly EmployeeContext _employeeContext;
 
@@ -17,48 +21,39 @@ namespace EmployeesDirectory.Controllers
             _employeeContext = employeeContext;
         }
 
+        [HttpPost]
+        public IActionResult Post([FromBody]EmployeeModel employeeModel)
+        {
+            try
+            {
+                var employee = employeeModel.ToEmployee();
+
+                _employeeContext.Employees.Add(employee);
+
+                _employeeContext.SaveChanges();
+
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+        }
+        
         [HttpGet]
-        public IEnumerable<EmployeeModel> GetAll()
+        public IEnumerable<EmployeeModel> Get()
         {
             var employees = _employeeContext.Employees.Select(employee => new EmployeeModel()
             {
                 Id = employee.Id,
-                FirstName = employee.Person.FirstName,
-                LastName = employee.Person.LastName,
-                Age = employee.Person.Age.ToString(CultureInfo.InvariantCulture),
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                Age = employee.Age,
             });
 
             return employees.ToArray();
-        }
-
-        [HttpGet]
-        public EmployeeModel GetOne(int id)
-        {
-            var employee = _employeeContext.Employees.FirstOrDefault(e => e.Id == id);
-            if (employee == null) return null;
-
-            return
-                new EmployeeModel()
-                {
-                    Id = employee.Id,
-                    FirstName = employee.Person.FirstName,
-                    LastName = employee.Person.LastName,
-                    Age = employee.Person.Age.ToString(CultureInfo.InvariantCulture),
-                };
-        }
-
-        public IEnumerable<EmployeeModel> GetMany(int managerId)
-        {
-            var employees = _employeeContext.Employees.Where(e => e.ManagerId == managerId);
-            if (!employees.Any()) return null;
-            
-            return employees.Select(employee => new EmployeeModel()
-            {
-                Id = employee.Id,
-                FirstName = employee.Person.FirstName,
-                LastName = employee.Person.LastName,
-                Age = employee.Person.Age.ToString(CultureInfo.InvariantCulture),
-            }).ToArray();
         }
     }
 }
